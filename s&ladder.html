@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                text-align: center;
+                font-family: Arial;
+                font-size: 12px;
+                background-color: grey;
+            }
+            .board {
+                width: 400px;
+                height: 400px;
+                border: 3px solid black;
+                position: relative;
+                margin-left:490px;
+                background-color: greenyellow;
+                background-image: url("snakesndladdernew.jpg");
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                background-position: center;
+
+            }
+            #player {
+                width: 40px;
+                height: 40px;
+                background: black;
+                position: absolute;
+                left:0;
+                bottom: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Snake & Ladder</h1>
+        <div class="board">
+            <div id="player"></div>
+        </div>
+        <p>Position: <span id="position">0</span></p>
+        <p>Dice: <span id="dice">__</span></p>
+
+        <button onclick="rollDice()" style="background-color: rgb(226, 43, 128);">Roll Dice</button>
+        <script>
+            let position=0;
+            let pos=document.getElementById('position');
+            let playerPos=document.getElementById('player');
+            let dicePos=document.getElementById('dice');
+            const snakes={
+                98:79,
+                94:75,
+                93:73,
+                87:36,
+                64:60,
+                62:19,
+                54:34,
+                17:7
+            };
+            const ladders={
+                1:38,
+                4:14,
+                9:31,
+                28:84,
+                21:42,
+                51:67,
+                72:91,
+                80:99
+            };
+            function rollDice(){
+                let dice = Math.floor((Math.random() * 6) + 1);
+                dicePos.innerText=dice;
+
+                if(position+dice<=100){
+                    position=position+dice;
+                }
+                if(snakes[position]){
+                    alert(`oh no,got bitten by snake! Going down at ${snakes[position]} :( `);
+                    position=snakes[position];   
+                }
+                if(ladders[position]){
+                    alert(`Yeeaaahh ladder!Going up at ${ladders[position]}.....`);
+                    position=ladders[position];
+                }
+                pos.innerText=position;
+                PlayerMovement()
+
+                if (position == 100) {
+                    alert("You Won the Game!");
+                }
+            }
+            function PlayerMovement(){
+                const cellSize=40;
+                const boardSize=10;
+                let x=Math.floor((position-1)/boardSize);
+                let y=(position-1)%10;
+
+                if(x%2!=0){
+                    y=boardSize-1-y;
+                }
+
+                playerPos.style.left=(y*cellSize)+"px";
+                playerPos.style.bottom=(x*cellSize)+"px";
+            }
+        </script>
+    </body>
+</html>
