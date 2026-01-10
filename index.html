@@ -14,80 +14,136 @@
                 border: 3px solid black;
                 position: relative;
                 margin-left:490px;
-                background-color: greenyellow;
-                background-image: url("snakesndladdernew.jpg");
+                background-image: url("ludogame.jpg");
                 background-size: 100% 100%;
                 background-repeat: no-repeat;
                 background-position: center;
 
             }
-            #player {
+            #player1 {
                 width: 40px;
                 height: 40px;
-                background: black;
+                background: red;
                 position: absolute;
                 left:0;
                 bottom: 0;
+                border-radius: 50%;
+            }
+            #player2{
+                width: 40px;
+                height: 40px;
+                background: blue;
+                position: absolute;
+                border-radius: 50%;
+                left:0;
+                bottom:10px;
             }
         </style>
     </head>
     <body>
-        <h1>Snake & Ladder</h1>
+        <h1>Snake & Ladder for 2 Players</h1>
+        <center><h2 style="padding: 5px;font-size: 15px;width:150px;border: 2px solid white;border-radius: 5px;text-align: center;background-color: green;">Turn: <span id="turn">Player1</span></h2></center>
         <div class="board">
-            <div id="player"></div>
+            <div id="player1"></div>
+            <div id="player2"></div>
         </div>
-        <p>Position: <span id="position">0</span></p>
+        <p>Player1 Position: <span id="pos1">0</span></p>
+        <p>Player2 Position: <span id="pos2">0</span></p>
+        
         <p>Dice: <span id="dice">__</span></p>
 
-        <button onclick="rollDice()" style="background-color: rgb(226, 43, 128);">Roll Dice</button>
+        <button onclick="rollDice1()" style="background-color: red;padding: 10px;">Player1</button>
+        <button onclick="rollDice2()" style="background-color: blue;padding: 10px;">Player2</button>
+        
         <script>
-            let position=0;
-            let pos=document.getElementById('position');
-            let playerPos=document.getElementById('player');
+            let p1Pos=0;
+            let p2Pos=0;
+            let currentPlayer=1;
+
+            let pos1value=document.getElementById('pos1');
+            let pos2value=document.getElementById('pos2');
+            let nextTurn=document.getElementById('turn');
             let dicePos=document.getElementById('dice');
+
+            let player1=document.getElementById('player1');
+            let player2=document.getElementById('player2');
+
             const snakes={
-                98:79,
-                94:75,
-                93:73,
-                87:36,
-                64:60,
-                62:19,
-                54:34,
-                17:7
+                40:3,
+                27:5,
+                43:18,
+                54:31,
+                66:45,
+                89:53,
+                95:77,
+                99:41
             };
             const ladders={
-                1:38,
-                4:14,
-                9:31,
-                28:84,
-                21:42,
-                51:67,
-                72:91,
-                80:99
+                4:25,
+                13:46,
+                42:63,
+                50:69,
+                62:81,
+                74:92
             };
-            function rollDice(){
+            function rollDice1(){
                 let dice = Math.floor((Math.random() * 6) + 1);
                 dicePos.innerText=dice;
 
-                if(position+dice<=100){
-                    position=position+dice;
-                }
-                if(snakes[position]){
-                    alert(`oh no,got bitten by snake! Going down at ${snakes[position]} :( `);
-                    position=snakes[position];   
-                }
-                if(ladders[position]){
-                    alert(`Yeeaaahh ladder!Going up at ${ladders[position]}.....`);
-                    position=ladders[position];
-                }
-                pos.innerText=position;
-                PlayerMovement()
+                if (currentPlayer==1){
 
-                if (position == 100) {
-                    alert("You Won the Game!");
+                    if(p1Pos+dice<=100){
+                        p1Pos=p1Pos+dice;
+                    }
+                    if(snakes[p1Pos]){
+                        alert(`oh no,Player1 got bitten by snake! Going down at ${snakes[p1Pos]} :( `);
+                        p1Pos=snakes[p1Pos];   
+                    }
+                    if(ladders[p1Pos]){
+                        alert(`Yeeaaahh ladder!Player1 Going up at ${ladders[p1Pos]}.....`);
+                        p1Pos=ladders[p1Pos];
+                    }
+
+                    pos1value.innerText=p1Pos;
+                    PlayerMovement(p1Pos,player1)
+
+                    if (p1Pos == 100) {
+                        alert("Player1 Won the Game!");
+                        return;
+                    }
+                    currentPlayer=2;
+                    nextTurn.innerText="Player2";
                 }
             }
-            function PlayerMovement(){
+            function rollDice2(){
+                let dice = Math.floor((Math.random() * 6) + 1);
+                dicePos.innerText=dice; 
+                if(currentPlayer==2){
+                    if(p2Pos+dice<=100){
+                        p2Pos=p2Pos+dice;
+                    }
+                    if(snakes[p2Pos]){
+                        alert(`oh no,Player2 got bitten by snake! Going down at ${snakes[p2Pos]} :( `);
+                        p2Pos=snakes[p2Pos];   
+                    }
+                    if(ladders[p2Pos]){
+                        alert(`Yeeaaahh ladder!Player2 Going up at ${ladders[p2Pos]}.....`);
+                        p2Pos=ladders[p2Pos];
+                    }
+
+                    pos2value.innerText=p2Pos;
+                    PlayerMovement(p2Pos,player2)
+
+                    if (p2Pos == 100) {
+                        alert("Player2 Won the Game!");
+                        return;
+                    }
+                    currentPlayer=1;
+                    nextTurn.innerText="Player1";
+
+                }
+            }
+            function PlayerMovement(position,player){
                 const cellSize=40;
                 const boardSize=10;
                 let x=Math.floor((position-1)/boardSize);
@@ -97,8 +153,8 @@
                     y=boardSize-1-y;
                 }
 
-                playerPos.style.left=(y*cellSize)+"px";
-                playerPos.style.bottom=(x*cellSize)+"px";
+                player.style.left=(y*cellSize)+"px";
+                player.style.bottom=(x*cellSize)+"px";
             }
         </script>
     </body>
